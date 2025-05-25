@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n-key="title"></title>
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+<header>
+    <h1>Fusion Artist Finder</h1>
+    <select id="language-selector" autocomplete="off">
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="en" selected="selected">🇬🇧 English</option>
+    </select>
+</header>
+<div class="container">
+    <p data-i18n-key="welcome-text"></p>
+    <p data-i18n-key="main-text"></p>
+</div>
+<div class="container" id="loginContainer">
+    <button class="button" data-i18n-key="login-button" onclick="login()"></button>
+</div>
+<div class="container" id="mainContainer">
+    <div class="button-group">
+        <button class="button-group-button">2019</button>
+        <button class="button-group-button">2022</button>
+        <button class="button-group-button">2023</button>
+        <button class="button-group-button selected">2024</button>
+    </div>
+    <div class="checkbox-group">
+        <label>
+            <input type="checkbox" name="playlist-toggle" value="playlists" autocomplete="off">
+            <span></span>
+            <span data-i18n-key="playlist-toggle"></span>
+        </label>
+        <label>
+            <input type="checkbox" name="saved-tracks-toggle" value="saved-tracks" autocomplete="off">
+            <span></span>
+            <span data-i18n-key="saved-tracks-toggle"></span>
+        </label>
+        <label>
+            <input type="checkbox" name="artists-follow-toggle" value="artists-follow" autocomplete="off">
+            <span></span>
+            <span data-i18n-key="artists-follow-toggle"></span>
+        </label>
+        <label>
+            <input type="checkbox" name="top-artist-toggle" value="top-artist" autocomplete="off">
+            <span></span>
+            <span data-i18n-key="top-artist-toggle"></span>
+        </label>
+        <label>
+            <input type="checkbox" name="recently-played-toggle" value="recently-played" autocomplete="off">
+            <span></span>
+            <span data-i18n-key="recently-played-toggle"></span>
+        </label>
+    </div>
+    <div>
+        <button class="button" id="checkButton" data-i18n-key="check-button" onclick="check()"></button>
+        <img id="spinner" height="14px" src="image/spinner.gif" />
+    </div>
+    <div class="output"><ol id="artist-list"></ol></div>
+</div>
+<footer><a href="https://github.com/hefeleal"><img height="12px" src="image/github-mark-white.svg" />/hefeleal</a></footer>
+<script type="text/javascript" src="js/i18n.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script type="text/javascript" src="js/artists/2019.js"></script>
+<script type="text/javascript" src="js/artists/2022.js"></script>
+<script type="text/javascript" src="js/artists/2023.js"></script>
+<script type="text/javascript" src="js/artists/2024.js"></script>
+<script type="text/javascript" src="js/spotify.js"></script>
+</body>
+</html>
