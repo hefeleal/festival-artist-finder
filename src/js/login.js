@@ -16,7 +16,7 @@ async function login() {
         scope,
         code_challenge_method: 'S256',
         code_challenge: codeChallenge,
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin + window.location.pathname,
     }
 
     authUrl.search = new URLSearchParams(params).toString();
@@ -54,7 +54,7 @@ async function getToken(code) {
             client_id: clientId,
             grant_type: 'authorization_code',
             code,
-            redirect_uri: window.location.origin,
+            redirect_uri: window.location.origin + window.location.pathname,
             code_verifier: codeVerifier,
         }),
     }
