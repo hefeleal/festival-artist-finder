@@ -26,7 +26,8 @@
         <button class="button-group-button">2019</button>
         <button class="button-group-button">2022</button>
         <button class="button-group-button">2023</button>
-        <button class="button-group-button selected">2024</button>
+        <button class="button-group-button">2024</button>
+        <button class="button-group-button selected">2025</button>
     </div>
     <div class="checkbox-group">
         <label>
@@ -61,13 +62,22 @@
     </div>
     <div class="output"><ol id="artist-list"></ol></div>
 </div>
-<footer><a href="https://github.com/hefeleal"><img height="12px" src="image/github-mark-white.svg" />/hefeleal</a></footer>
+<footer><a href="https://github.com/hefeleal" target="_blank"><img height="12px" src="image/github-mark-white.svg" />/hefeleal</a></footer>
+<div class="modal-overlay" id="dialog">
+    <div class="modal" id="dialogBox">
+        <h2 data-i18n-key="dialog-error"></h2>
+        <p id="dialogText"></p>
+        <p data-i18n-key="dialog-retry"></p>
+        <button data-i18n-key="dialog-ok" class="button" onclick="closeDialog()"></button>
+    </div>
+</div>
 <script type="text/javascript" src="js/i18n.js"></script>
 <script type="text/javascript" src="js/login.js"></script>
 <script type="text/javascript" src="js/artists/2019.js"></script>
 <script type="text/javascript" src="js/artists/2022.js"></script>
 <script type="text/javascript" src="js/artists/2023.js"></script>
 <script type="text/javascript" src="js/artists/2024.js"></script>
+<script type="text/javascript" src="js/artists/2025.js"></script>
 <script type="text/javascript" src="js/spotify.js"></script>
 </body>
 </html>

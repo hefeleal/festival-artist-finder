@@ -19,6 +19,9 @@ const translations = {
         "recently-played-info": "Recently played",
         "check-button": "Go",
         "no-artists-found": "Nothing found",
+        "dialog-error": "Error",
+        "dialog-retry": "Please try again.",
+        "dialog-ok": "OK",
     },
     "de": {
         "title": "Fusion Artist Finder",
@@ -38,6 +41,9 @@ const translations = {
         "recently-played-info": "Kürzlich abgespielt",
         "check-button": "Los",
         "no-artists-found": "Nichts gefunden",
+        "dialog-error": "Fehler",
+        "dialog-retry": "Bitte nochmal versuchen.",
+        "dialog-ok": "OK",
     },
 };
 

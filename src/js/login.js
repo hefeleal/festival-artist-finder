@@ -59,7 +59,12 @@ async function getToken(code) {
         }),
     }
 
-    const response = await fetch(url, payload);
+    let response;
+    try {
+        response = await fetch(url, payload);
+    } catch (error) {
+        return false;
+    }
     if (response.status == 200) {
         const data = await response.json();
         saveAuthTokens(data);
@@ -88,8 +93,15 @@ async function getRefreshToken() {
             client_id: clientId
         }),
     }
-    const response = await fetch(url, payload);
-    if (response.status == 200) {
+
+    let response;
+    let request_failed = false;
+    try {
+        response = await fetch(url, payload);
+    } catch (error) {
+        request_failed = true;
+    }
+    if (!request_failed && response.status == 200) {
         const data = await response.json();
         saveAuthTokens(data);
         return true;
@@ -113,6 +125,30 @@ function saveAuthTokens(json_response) {
     }
 }
 
+function showDialog(message) {
+    const overlay = document.getElementById('dialog');
+    overlay.classList.remove('fade-out');
+    overlay.classList.add('show');
+    document.getElementById('dialogText').innerHTML = message;
+    document.addEventListener('keydown', handleEscape);
+}
+
+function closeDialog() {
+    const overlay = document.getElementById('dialog');
+    overlay.classList.remove('show');
+    overlay.classList.add('fade-out');
+    document.removeEventListener('keydown', handleEscape);
+    overlay.addEventListener('transitionend', () => {
+        overlay.classList.remove('fade-out');
+    }, { once: true });
+}
+
+function handleEscape(event) {
+    if (event.key === 'Escape') {
+        closeDialog();
+    }
+}
+
 async function loadContent() {
     document.addEventListener('gesturestart', function (e) {
         e.preventDefault();
@@ -128,6 +164,12 @@ async function loadContent() {
         checkbox.addEventListener('change', updateButtonState);
     });
     updateButtonState();
+
+    document.getElementById('dialog').addEventListener('click', function (e) {
+        if (!document.getElementById('dialogBox').contains(e.target)) {
+            closeDialog();
+        }
+    });
 
     const buttonGroupButtons = document.querySelectorAll('.button-group-button');
     buttonGroupButtons.forEach(button => {

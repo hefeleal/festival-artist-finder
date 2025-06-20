@@ -13,10 +13,14 @@ function getFestivalArtists() {
         break;
         case "2024": input_list = artists_2024;
         break;
+        case "2025": input_list = artists_2025;
+        break;
         default: return [];
     }
     const artists = new Set(input_list
         .replaceAll("&amp;", "&")
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&quot;", "'")
         .replaceAll("  ", " ")
         .split("\n")
         .map(x => x.trim().normalize('NFD')
@@ -30,7 +34,13 @@ function getFestivalArtists() {
 
 // get user info
 async function getUser() {
-    const response = await fetch('https://api.spotify.com/v1/me', { headers });
+    let response;
+    try {
+        response = await fetch('https://api.spotify.com/v1/me', { headers });
+    } catch (error) {
+        showDialog(error);
+        return null;
+    }
     if (response.status != 200) {
         const loggedIn = await getRefreshToken();
         if (loggedIn) {
@@ -51,28 +61,33 @@ async function check() {
     const festivalArtists = getFestivalArtists();
 
     artistMap.clear();
+    let skip = false; // skip all subsequent API calls if any fetch() call throws an error
     const checkbox1 = document.querySelector('input[name="playlist-toggle"]');
     if (checkbox1.checked) { // compare artists from all user's playlists with festival artists
         const playlists = await getMyPlaylists();
-        for (const p of playlists) {
-            await getArtistsOfPlaylist(p.id, festivalArtists, p.name);
+        if (playlists == null) {
+            skip = true;
+        } else {
+            for (const p of playlists) {
+                await getArtistsOfPlaylist(p.id, festivalArtists, p.name);
+            }
         }
     }
     const checkbox2 = document.querySelector('input[name="saved-tracks-toggle"]');
     if (checkbox2.checked) { // compare the user's saved tracks with festival artists
-        await getMySavedArtists(festivalArtists);
+        skip = skip || false == await getMySavedArtists(festivalArtists);
     }
     const checkbox3 = document.querySelector('input[name="artists-follow-toggle"]');
     if (checkbox3.checked) { // compare the user's followed artists with festival artists
-        await getMyFollowedArtists(festivalArtists);
+        skip = skip || false == await getMyFollowedArtists(festivalArtists);
     }
     const checkbox4 = document.querySelector('input[name="top-artist-toggle"]');
     if (checkbox4.checked) { // compare the user's top artists with festival artists
-        await getMyTopArtists(festivalArtists);
+        skip = skip || false == await getMyTopArtists(festivalArtists);
     }
     const checkbox5 = document.querySelector('input[name="recently-played-toggle"]');
     if (checkbox5.checked) { // compare the user's recently played tracks with festival artists
-        await getMyRecentlyPlayedTracks(festivalArtists);
+        skip = skip || false == await getMyRecentlyPlayedTracks(festivalArtists);
     }
     document.querySelector('#spinner').style.display = 'none';
     document.querySelector('#checkButton').disabled = false;
@@ -85,11 +100,20 @@ async function check() {
 // get playlists that the currently logged in user created
 async function getMyPlaylists() {
     const id = await getUser();
+    if (id == null) {
+        return null;
+    }
     let url = 'https://api.spotify.com/v1/me/playlists?limit=50';
     const playlists = [];
 
     do {
-        const response = await fetch(url, { headers });
+        let response;
+        try {
+            response = await fetch(url, { headers });
+        } catch (error) {
+            showDialog(error);
+            return null;
+        }
         if (response.status != 200) {
             const loggedIn = await getRefreshToken();
             if (loggedIn) {
@@ -126,13 +150,19 @@ async function getMySavedArtists(festivalArtists) {
 // generic function to get artists from a tracks API endpoint
 async function getArtistsFromAPI(url, festivalArtists, source) {
     do {
-        const response = await fetch(url, { headers });
+        let response;
+        try {
+            response = await fetch(url, { headers });
+        } catch (error) {
+            showDialog(error);
+            return false;
+        }
         if (response.status != 200) {
             const loggedIn = await getRefreshToken();
             if (loggedIn) {
                 continue;
             } else {
-                return null;
+                return false;
             }
         }
         const data = await response.json();
@@ -164,13 +194,19 @@ async function getMyFollowedArtists(festivalArtists) {
     const source = "<span data-i18n-key='artists-follow-info'></span>";
     let url = 'https://api.spotify.com/v1/me/following?type=artist&limit=50';
     do {
-        const response = await fetch(url, { headers });
+        let response;
+        try {
+            response = await fetch(url, { headers });
+        } catch (error) {
+            showDialog(error);
+            return false;
+        }
         if (response.status != 200) {
             const loggedIn = await getRefreshToken();
             if (loggedIn) {
                 continue;
             } else {
-                return null;
+                return false;
             }
         }
         const data = await response.json();
@@ -200,13 +236,19 @@ async function getMyTopArtists(festivalArtists) {
     const source = "<span data-i18n-key='top-artist-info'></span>";
     let url = 'https://api.spotify.com/v1/me/top/artists?limit=50';
     do {
-        const response = await fetch(url, { headers });
+        let response;
+        try {
+            response = await fetch(url, { headers });
+        } catch (error) {
+            showDialog(error);
+            return false;
+        }
         if (response.status != 200) {
             const loggedIn = await getRefreshToken();
             if (loggedIn) {
                 continue;
             } else {
-                return null;
+                return false;
             }
         }
         const data = await response.json();
